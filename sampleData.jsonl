@@ -1,0 +1,6 @@
+{"firstname": "John", "lastname": "Doe", "isAdmin": true, "email":"john.doe@example.com", "age": 30, "address": "123 Main St", "phone": "555-1234", "gender": "Male", "isRh": true}
+{"firstname": "Jane", "lastname": "Smith", "isAdmin": false, "email":"jane.smith@example.com", "age": 25, "address": "456 Elm St", "phone": "555-5678", "gender": "Female", "isRh": false}
+{"firstname": "Bob", "lastname": "Johnson", "isAdmin": false, "email":"bob.johnson@example.com", "age": 35, "address": "789 Oak St", "phone": "555-9876", "gender": "Male", "isRh": false}
+{"firstname": "Alice", "lastname": "Williams", "isAdmin": false, "email":"alice.williams@example.com", "age": 28, "address": "101 Pine St", "phone": "555-2468", "gender": "Female", "isRh": false}
+{"firstname": "Charlie", "lastname": "Brown", "isAdmin": true, "email":"charlie.brown@example.com", "age": 22, "address": "321 Maple St", "phone": "555-4321", "gender": "Male", "isRh": true}
+{"firstname": "David", "lastname": "Lee", "isAdmin": false, "email":"david.lee@example.com", "age": 29, "address": "555 Elm St", "phone": "555-1111", "gender": "Male", "isRh": true}
