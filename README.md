@@ -2,8 +2,8 @@ List of tasks to complete:
 
 ## USER MANAGEMENT
 
-- [ ] Add create account/users
-- [ ] Add authentication to the app
+- [x] Add create account/users
+- [x] Add authentication to the app
 - [ ] Add user roles and permissions
 - [ ] Implement user profile management
 

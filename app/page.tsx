@@ -2,18 +2,30 @@
 
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
+import { Authenticated, Unauthenticated } from "convex/react";
+import { SignInButton, UserButton } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const users = useQuery(api.users.get);
   return (
-    <main className="flex min-h-200 flex-col items-center justify-between p-2">
-      {users?.map(({ _id, lastname, firstname, isRH }) => (
-        <div key={_id}>
-          <p>Nom de famille:{lastname}</p>
-          <p>Prénom:{firstname}</p>
-          <p>RH: {isRH ? "Oui" : "Non"}</p>
-        </div>
-      ))}
-    </main>
+    <>
+      <Authenticated>
+        <UserButton />
+        <ConnectedUser />
+      </Authenticated>
+      <Unauthenticated>
+        <SignInButton />
+      </Unauthenticated>
+    </>
   );
+}
+
+function ConnectedUser() {
+  const user = useQuery(api.users.getForCurrentUser);
+  const router = useRouter();
+  if (!user) {
+    router.push("/create-user");
+  }
+
+  return <div>Info Utilisateur: {JSON.stringify(user)}</div>;
 }
