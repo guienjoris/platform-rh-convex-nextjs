@@ -17,46 +17,41 @@ export const updateUser = internalMutation({
   },
 });
 
+export const getConnectedAndCompletedUser = query({
+  args: {
+    subject: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) => q.eq("subject", args.subject))
+      .unique();
+  },
+});
+
 export const getForCurrentUser = query({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (identity === null) {
-      throw new Error("Not authenticated");
+      return null;
     }
 
-    const externalId = identity.subject;
+    // const externalId = identity.subject;
 
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) => q.eq("subject", externalId))
-      .unique();
+    // const user = await ctx.db
+    //   .query("users")
+    //   .withIndex("by_token", (q) => q.eq("subject", externalId))
+    //   .unique();
 
-    console.log({ user });
-    if (user) {
-      return user;
-    }
-
-    return identity;
-
-    // if (user !== null) {
-    //   // Example: keep name in sync if it changed
-    //   if (user.lastname !== identity.lastname) {
-    //     await ctx.db.patch("users", user._id, {
-    //       lastname: (identity.lastname as string) ?? "Anonymous",
-    //     });
-    //   }
+    // if (user) {
     //   return user;
     // }
 
-    // return await ctx.db.insert("users", {
-    //   firstname: identity.givenName ?? "Anonymous",
-    //   lastname: (identity.lastname as string) ?? "Anonymous",
-    //   email: identity.email as string,
-    //   role: "collaborator",
-    //   gender: "other",
-    //   subject: identity.subject,
-    // });
+    return {
+      ...identity,
+      toComplete: true,
+    };
   },
 });
 

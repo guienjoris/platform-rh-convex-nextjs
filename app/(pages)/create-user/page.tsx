@@ -4,10 +4,12 @@ import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
+import { ConvexError } from "convex/values";
+import { showToast } from "nextjs-toast-notify";
 
 export default function CreateUserPage() {
   const createUser = useMutation(api.users.createUser);
-  const user = useQuery(api.users.getForCurrentUser);
+  const identity = useQuery(api.users.getForCurrentUser);
   const router = useRouter();
 
   return (
@@ -21,19 +23,31 @@ export default function CreateUserPage() {
           const firstname = formData.get("firstname") as string;
           const email = formData.get("email") as string;
           const gender = formData.get("gender") as "male" | "female" | "other";
-          const userCreated = await createUser({
-            lastname,
-            firstname,
-            role: "collaborator",
-            email,
-            gender,
-            subject: user?.subject ?? "",
-          });
+          try {
+            await createUser({
+              lastname,
+              firstname,
+              role: "collaborator",
+              email,
+              gender,
+              subject: identity?.subject ?? "",
+            });
 
-          if (userCreated) {
             router.push("/");
-          } else {
-            alert("Failed to create user");
+          } catch (error) {
+            const message =
+              error instanceof ConvexError
+                ? (error.data as { message: string }).message
+                : "Unexpected error";
+
+            showToast.error(message, {
+              duration: 5000,
+              progress: true,
+              position: "top-center",
+              transition: "bounceIn",
+              icon: "",
+              sound: false,
+            });
           }
         }}
       >
@@ -44,7 +58,7 @@ export default function CreateUserPage() {
               className="ml-2 border-s-stone-400 border-2 rounded"
               type="text"
               name="email"
-              defaultValue={user?.email}
+              defaultValue={identity?.email}
               required
             />
           </label>
@@ -56,7 +70,6 @@ export default function CreateUserPage() {
               className="ml-2 border-s-stone-400 border-2 rounded"
               type="text"
               name="lastname"
-              defaultValue={user?.lastname as string}
               required
             />
           </label>
@@ -68,7 +81,6 @@ export default function CreateUserPage() {
               className="ml-2 border-s-stone-400 border-2 rounded"
               type="text"
               name="firstname"
-              defaultValue={user?.firstname as string}
               required
             />
           </label>
@@ -79,7 +91,7 @@ export default function CreateUserPage() {
             <select
               name="gender"
               className="ml-2 border-s-stone-400 border-2 rounded"
-              defaultValue={user?.gender as string}
+              defaultValue={identity?.gender as string}
             >
               <option value="">Veuillez sélectionner un genre</option>
               <option value="male">Homme</option>

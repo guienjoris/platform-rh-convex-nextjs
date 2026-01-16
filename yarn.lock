@@ -2647,6 +2647,11 @@ next@16.1.1:
     "@next/swc-win32-x64-msvc" "16.1.1"
     sharp "^0.34.4"
 
+nextjs-toast-notify@^1.58.0:
+  version "1.58.0"
+  resolved "https://registry.yarnpkg.com/nextjs-toast-notify/-/nextjs-toast-notify-1.58.0.tgz#469f7bd8ca402b42c275ca097416e53c289e5978"
+  integrity sha512-fnziZfwUqvmrKwFPlAEafflsi/D5dKnwm/Ux0mmDGqsaALgKUap7aOt305bp+sujJSvwAB2kJIvUMEBq8Ff9GQ==
+
 node-releases@^2.0.27:
   version "2.0.27"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.27.tgz#eedca519205cf20f650f61d56b070db111231e4e"
