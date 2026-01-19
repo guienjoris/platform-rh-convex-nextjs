@@ -1,4 +1,4 @@
-import { query, mutation, internalMutation } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
 export const get = query({
@@ -8,12 +8,26 @@ export const get = query({
   },
 });
 
-export const updateUser = internalMutation({
-  args: { userId: v.id("users"), key: v.string(), value: v.any() },
+export const updateUser = mutation({
+  args: {
+    userId: v.id("users"),
+    user: v.object({
+      firstname: v.string(),
+      lastname: v.string(),
+      email: v.string(),
+      role: v.optional(
+        v.union(v.literal("admin"), v.literal("collaborator"), v.literal("rh")),
+      ),
+      gender: v.union(
+        v.literal("male"),
+        v.literal("female"),
+        v.literal("other"),
+      ),
+      manager: v.optional(v.id("users")),
+    }),
+  },
   handler: async (ctx, args) => {
-    await ctx.db.patch("users", args.userId, {
-      [args.key]: args.value,
-    });
+    await ctx.db.patch("users", args.userId, args.user);
   },
 });
 
@@ -24,8 +38,18 @@ export const getConnectedAndCompletedUser = query({
   handler: async (ctx, args) => {
     return await ctx.db
       .query("users")
-      .withIndex("by_token", (q) => q.eq("subject", args.subject))
+      .withIndex("by_subject", (q) => q.eq("subject", args.subject))
       .unique();
+  },
+});
+
+export const getNmoins1 = query({
+  args: { managerId: v.id("users") },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_manager", (user) => user.eq("manager", args.managerId))
+      .collect();
   },
 });
 
@@ -36,17 +60,6 @@ export const getForCurrentUser = query({
     if (identity === null) {
       return null;
     }
-
-    // const externalId = identity.subject;
-
-    // const user = await ctx.db
-    //   .query("users")
-    //   .withIndex("by_token", (q) => q.eq("subject", externalId))
-    //   .unique();
-
-    // if (user) {
-    //   return user;
-    // }
 
     return {
       ...identity,
@@ -66,18 +79,34 @@ export const createUser = mutation({
       v.literal("rh"),
     ),
     gender: v.union(v.literal("male"), v.literal("female"), v.literal("other")),
+    manager: v.optional(v.id("users")),
     subject: v.string(),
   },
   handler: async (
     ctx,
-    { firstname, lastname, email, role, gender, subject },
+    { firstname, lastname, email, role, gender, subject, manager },
   ) => {
+    const existingBySubject = await ctx.db
+      .query("users")
+      .withIndex("by_subject", (q) => q.eq("subject", subject))
+      .first();
+
+    const existingByEmail = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .first();
+
+    if (existingBySubject || existingByEmail) {
+      throw new Error("Email or Subject already exists");
+    }
+
     return await ctx.db.insert("users", {
       firstname,
       lastname,
       email,
       role,
       gender,
+      manager,
       subject,
     });
   },

@@ -1,6 +1,31 @@
-{"firstname": "John", "lastname": "Doe", "isAdmin": true, "email":"john.doe@example.com", "age": 30, "address": "123 Main St", "phone": "555-1234", "gender": "Male", "isRh": true}
-{"firstname": "Jane", "lastname": "Smith", "isAdmin": false, "email":"jane.smith@example.com", "age": 25, "address": "456 Elm St", "phone": "555-5678", "gender": "Female", "isRh": false}
-{"firstname": "Bob", "lastname": "Johnson", "isAdmin": false, "email":"bob.johnson@example.com", "age": 35, "address": "789 Oak St", "phone": "555-9876", "gender": "Male", "isRh": false}
-{"firstname": "Alice", "lastname": "Williams", "isAdmin": false, "email":"alice.williams@example.com", "age": 28, "address": "101 Pine St", "phone": "555-2468", "gender": "Female", "isRh": false}
-{"firstname": "Charlie", "lastname": "Brown", "isAdmin": true, "email":"charlie.brown@example.com", "age": 22, "address": "321 Maple St", "phone": "555-4321", "gender": "Male", "isRh": true}
-{"firstname": "David", "lastname": "Lee", "isAdmin": false, "email":"david.lee@example.com", "age": 29, "address": "555 Elm St", "phone": "555-1111", "gender": "Male", "isRh": true}
+{"label": "Récupération", "code": "REC"}
+{"label": "Congé parental d'éducation", "code": "CPE"}
+{"label": "Congé pour heures de délégation", "code": "CHD"}
+{"label": "Congé d'accompagnement familial", "code": "CAF"}
+{"label": "Congé pour être juré", "code": "CJ"}
+{"label": "Congé pour examens", "code": "CE"}
+{"label": "Congé pour examens médicaux", "code": "CPM"}
+{"label": "Congé de formation syndicale", "code": "CFS"}
+{"label": "Congé dimanche et férié libéré", "code": "DFL"}
+{"label": "RTT / Repos forfait", "code": "RTT"}
+{"label": "Congé déménagement", "code": "CD"}
+{"label": "Repos de nuit", "code": "RN"}
+{"label": "Congé Compte Epargne Temps", "code": "CET"}
+{"label": "Récupération férié", "code": "RF"}
+{"label": "Contrepartie obligatoire en repos", "code": "COR"}
+{"label": "Congé conventionnel (CCU BAD / FEHAP)", "code": "CCO"}
+{"label": "Congé création d'entreprise", "code": "CCE"}
+{"label": "Congé d'ancienneté", "code": "CA"}
+{"label": "Congé de fractionnement", "code": "CDF"}
+{"label": "Congé de solidarité internationale", "code": "CSI"}
+{"label": "Congé enfant malade", "code": "CEM"}
+{"label": "Congé maternité/paternité/adoption", "code": "CMP"}
+{"label": "Congé payé", "code": "CP"}
+{"label": "Congé pour événement familial", "code": "CEF"}
+{"label": "Congé pour formation", "code": "CF"}
+{"label": "Congé sabbatique", "code": "CSA"}
+{"label": "Congé sans solde", "code": "CSS"}
+{"label": "Congé supplémentaire", "code": "CS"}
+{"label": "Congé VAE", "code": "VAE"}
+{"label": "Congé trimestriel", "code": "CTR"}
+{"label": "Congé reporté (Loi DDADUE)", "code": "REP"}

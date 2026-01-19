@@ -30,6 +30,15 @@ export function Sidebar() {
           </div>
           <div className="mt-4">
             <Link
+              href="/modify-user"
+              className="text-white
+                          hover:text-gray-300"
+            >
+              Modifier mon compte
+            </Link>
+          </div>
+          <div className="mt-4">
+            <Link
               href="/planning"
               className="text-white
                           hover:text-gray-300"
