@@ -6,13 +6,13 @@ import { useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { ConvexError } from "convex/values";
 import { showToast } from "nextjs-toast-notify";
+import { Input } from "@/app/components/ui/input/input";
+import { Select } from "@/app/components/ui/select/select";
 
 export default function CreateUserPage() {
   const createUser = useMutation(api.users.createUser);
   const identity = useQuery(api.users.getForCurrentUser);
   const router = useRouter();
-
-  const users = useQuery(api.users.get);
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     const formData = new FormData(event.target as HTMLFormElement);
@@ -66,70 +66,33 @@ export default function CreateUserPage() {
         }}
       >
         <div className="p-2">
-          <label>
-            Email:
-            <input
-              className="ml-2 border-s-stone-400 border-2 rounded"
-              type="text"
-              name="email"
-              defaultValue={identity?.email}
-              required
-            />
-          </label>
+          <Input
+            type="text"
+            name="email"
+            defaultValue={identity?.email}
+            label="Email:"
+            required
+          />
         </div>
         <div className="p-2">
-          <label>
-            Nom de famille:
-            <input
-              className="ml-2 border-s-stone-400 border-2 rounded"
-              type="text"
-              name="lastname"
-              required
-            />
-          </label>
+          <Input type="text" name="lastname" label="Nom de famille:" required />
         </div>
         <div className="p-2">
-          <label>
-            Prénom:
-            <input
-              className="ml-2 border-s-stone-400 border-2 rounded"
-              type="text"
-              name="firstname"
-              required
-            />
-          </label>
+          <Input type="text" name="firstname" label="Prénom:" required />
         </div>
         <div className="p-2">
-          <label>
-            Genre:
-            <select
-              name="gender"
-              className="ml-2 border-s-stone-400 border-2 rounded"
-              defaultValue={identity?.gender as string}
-            >
-              <option value="">Veuillez sélectionner un genre</option>
-              <option value="male">Homme</option>
-              <option value="female">Femme</option>
-              <option value="other">Autre</option>
-            </select>
-          </label>
+          <Select
+            name="gender"
+            label="Genre:"
+            options={[
+              { value: "male", label: "Homme" },
+              { value: "female", label: "Femme" },
+              { value: "other", label: "Autre" },
+            ]}
+            onChange={() => {}}
+          />
         </div>
-        <div className="p-2">
-          <label>
-            Responsable Hiérarchique:
-            <select
-              name="gender"
-              className="ml-2 border-s-stone-400 border-2 rounded"
-            >
-              <option value="">Veuillez sélectionner un collaborateur</option>
-              {users?.map((user) => (
-                <option key={user._id} value={user._id}>
-                  {user.firstname} {user.lastname} ({user.email})
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-10 hover:cursor-pointer"

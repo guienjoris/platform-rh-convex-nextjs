@@ -7,8 +7,10 @@ import { useRouter } from "next/navigation";
 import { ConvexError } from "convex/values";
 import { showToast } from "nextjs-toast-notify";
 import { forbidden } from "next/navigation";
-import { ROLES } from "@/app/constants/roles";
+import { ROLES, rolesTypes } from "@/app/constants/roles";
 import { Id } from "@/convex/_generated/dataModel";
+import { Input } from "@/app/components/ui/input/input";
+import { Select } from "@/app/components/ui/select/select";
 
 export default function ModifyUserPage() {
   const modifyUser = useMutation(api.users.updateUser);
@@ -25,13 +27,12 @@ export default function ModifyUserPage() {
 
   const users = useQuery(api.users.get);
 
-  console.log(users);
-
   if (!user) {
     return <div>Loading ...</div>;
   }
 
-  const isRHOrAdmin = user.role === "rh" || user.role === "admin";
+  const isRHOrAdmin =
+    user.role === rolesTypes.rh || user.role === rolesTypes.admin;
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -93,95 +94,69 @@ export default function ModifyUserPage() {
         }}
       >
         <div className="p-2">
-          <label>
-            Email:
-            <input
-              className="ml-2 border-s-stone-400 border-2 rounded"
-              type="text"
-              name="email"
-              defaultValue={user.email}
-              required
-            />
-          </label>
+          <Input
+            type="text"
+            name="email"
+            defaultValue={user.email}
+            label="Email:"
+            required
+          />
         </div>
         <div className="p-2">
-          <label>
-            Nom de famille:
-            <input
-              className="ml-2 border-s-stone-400 border-2 rounded"
-              type="text"
-              name="lastname"
-              defaultValue={user.lastname}
-              required
-            />
-          </label>
+          <Input
+            type="text"
+            name="lastname"
+            defaultValue={user.lastname}
+            label="Nom de famille:"
+            required
+          />
         </div>
         <div className="p-2">
-          <label>
-            Prénom:
-            <input
-              className="ml-2 border-s-stone-400 border-2 rounded"
-              type="text"
-              name="firstname"
-              defaultValue={user.firstname}
-              required
-            />
-          </label>
+          <Input
+            type="text"
+            name="firstname"
+            defaultValue={user.firstname}
+            label="Prénom:"
+            required
+          />
         </div>
         <div className="p-2">
-          <label>
-            Genre:
-            <select
-              name="gender"
-              className="ml-2 border-s-stone-400 border-2 rounded"
-              defaultValue={user.gender}
-            >
-              <option value="">Veuillez sélectionner un genre</option>
-              <option value="male">Homme</option>
-              <option value="female">Femme</option>
-              <option value="other">Autre</option>
-            </select>
-          </label>
+          <Select
+            name="gender"
+            label="Genre:"
+            options={[
+              { value: "male", label: "Homme" },
+              { value: "female", label: "Femme" },
+              { value: "other", label: "Autre" },
+            ]}
+            onChange={() => {}}
+            defaultValue={user.gender}
+          />
         </div>
 
         {isRHOrAdmin && (
           <div>
             <div className="p-2">
-              <label>
-                Rôle:
-                <select
-                  name="role"
-                  className="ml-2 border-s-stone-400 border-2 rounded"
-                  defaultValue={user?.role}
-                >
-                  <option value="">Veuillez sélectionner un rôle</option>
-                  {ROLES?.map((role) => (
-                    <option key={role} value={role}>
-                      {role}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <Select
+                name="role"
+                label="Rôle: "
+                options={ROLES.map((role) => ({ value: role, label: role }))}
+                onChange={() => {}}
+                defaultValue={user?.role}
+              />
             </div>
             {users && (
               <div className="p-2">
-                <label>
-                  Responsable Hiérarchique:
-                  <select
-                    name="manager"
-                    className="ml-2 border-s-stone-400 border-2 rounded"
-                    defaultValue={user?.manager}
-                  >
-                    <option value="">
-                      Veuillez sélectionner un collaborateur
-                    </option>
-                    {users?.map((user) => (
-                      <option key={user._id} value={user._id}>
-                        {user.firstname} {user.lastname} ({user.email})
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                <Select
+                  name="manager"
+                  label="Responsable Hiérarchique:"
+                  options={users.map((user) => ({
+                    value: user._id,
+                    label: `${user.firstname}  ${user.lastname} (${user.email})}`,
+                  }))}
+                  onChange={() => {}}
+                  defaultValue={user?.manager}
+                />
               </div>
             )}
           </div>
