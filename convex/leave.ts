@@ -1,4 +1,4 @@
-import { mutation } from "./_generated/server";
+import { mutation, QueryCtx, query } from "./_generated/server";
 import { v } from "convex/values";
 
 export const saveLeave = mutation({
@@ -25,5 +25,12 @@ export const saveLeave = mutation({
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       });
     }
+  },
+});
+
+export const getLeaveTypes = query({
+  args: {},
+  handler: async (ctx: QueryCtx) => {
+    return ctx.db.query("leavetypes").collect();
   },
 });

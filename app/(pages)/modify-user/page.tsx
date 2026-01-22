@@ -9,8 +9,7 @@ import { showToast } from "nextjs-toast-notify";
 import { forbidden } from "next/navigation";
 import { ROLES, rolesTypes } from "@/app/constants/roles";
 import { Id } from "@/convex/_generated/dataModel";
-import { Input } from "@/app/components/ui/input/input";
-import { Select } from "@/app/components/ui/select/select";
+import { Input, Select } from "@/app/components/ui";
 
 export default function ModifyUserPage() {
   const modifyUser = useMutation(api.users.updateUser);

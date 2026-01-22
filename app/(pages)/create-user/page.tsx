@@ -6,8 +6,7 @@ import { useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { ConvexError } from "convex/values";
 import { showToast } from "nextjs-toast-notify";
-import { Input } from "@/app/components/ui/input/input";
-import { Select } from "@/app/components/ui/select/select";
+import { Input, Select } from "@/app/components/ui";
 
 export default function CreateUserPage() {
   const createUser = useMutation(api.users.createUser);

@@ -20,7 +20,7 @@ export function Input({
   required,
 }: InputProps) {
   return (
-    <label>
+    <label className="font-bold">
       {label}
       <input
         type={type}

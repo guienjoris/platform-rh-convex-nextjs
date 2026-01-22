@@ -10,6 +10,7 @@ type SelectProps = {
   value?: string;
   onChange: (value: string) => void;
   defaultValue?: string;
+  required?: boolean;
 };
 
 export function Select({
@@ -19,9 +20,10 @@ export function Select({
   value,
   onChange,
   defaultValue,
+  required,
 }: SelectProps) {
   return (
-    <label>
+    <label className="font-bold">
       {label}
       <select
         className="ml-2 border-s-stone-400 border-2 rounded"
@@ -29,6 +31,7 @@ export function Select({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         defaultValue={defaultValue}
+        required={required}
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
