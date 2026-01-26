@@ -1,4 +1,5 @@
-import { query, mutation } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
+import { query, mutation, QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 
 export const get = query({
@@ -40,6 +41,15 @@ export const getConnectedAndCompletedUser = query({
       .query("users")
       .withIndex("by_subject", (q) => q.eq("subject", args.subject))
       .unique();
+  },
+});
+
+export const getUserById = query({
+  args: {
+    id: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    return getUserByIdFunction(ctx, args);
   },
 });
 
@@ -111,3 +121,15 @@ export const createUser = mutation({
     });
   },
 });
+
+/* UTILS */
+
+export const getUserByIdFunction = async (
+  ctx: QueryCtx,
+  args: { id: Id<"users"> },
+) => {
+  return await ctx.db
+    .query("users")
+    .withIndex("by_id", (q) => q.eq("_id", args.id))
+    .unique();
+};

@@ -37,7 +37,10 @@ export default defineSchema(
       timeZone: v.optional(v.string()),
       validatedBy: v.optional(v.id("users")),
       validatedAt: v.optional(v.string()),
-    }).index("by_user", ["assignerId", "assignedId", "validatedBy"]),
+    })
+      .index("by_assigner_id", ["assignerId"])
+      .index("by_assigned_id", ["assignedId"])
+      .index("by_validate_by", ["validatedBy"]),
   },
   { schemaValidation: true },
 );
