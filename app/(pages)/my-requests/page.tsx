@@ -3,7 +3,7 @@ import { forbidden } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
-export default function PlanningPage() {
+export default function MyRequestsPage() {
   const identity = useQuery(api.users.getForCurrentUser);
 
   if (!identity) {

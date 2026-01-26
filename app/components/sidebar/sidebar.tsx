@@ -39,7 +39,16 @@ export function Sidebar() {
           </div>
           <div className="mt-4">
             <Link
-              href="/planning"
+              href="/my-requests"
+              className="text-white
+                          hover:text-gray-300"
+            >
+              Mes requêtes
+            </Link>
+          </div>
+          <div className="mt-4">
+            <Link
+              href="/my-calendar"
               className="text-white
                           hover:text-gray-300"
             >
