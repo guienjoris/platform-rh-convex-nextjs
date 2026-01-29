@@ -36,10 +36,10 @@ export const getConnectedAndCompletedUser = query({
   args: {
     subject: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, { subject }) => {
     return await ctx.db
       .query("users")
-      .withIndex("by_subject", (q) => q.eq("subject", args.subject))
+      .withIndex("by_subject", (q) => q.eq("subject", subject))
       .unique();
   },
 });
@@ -66,15 +66,7 @@ export const getNmoins1 = query({
 export const getForCurrentUser = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (identity === null) {
-      return null;
-    }
-
-    return {
-      ...identity,
-      toComplete: true,
-    };
+    return getIdentityFunction(ctx);
   },
 });
 
@@ -132,4 +124,15 @@ export const getUserByIdFunction = async (
     .query("users")
     .withIndex("by_id", (q) => q.eq("_id", args.id))
     .unique();
+};
+
+export const getIdentityFunction = async (ctx: QueryCtx) => {
+  const identity = await ctx.auth.getUserIdentity();
+  if (identity === null) {
+    return null;
+  }
+
+  return {
+    ...identity,
+  };
 };

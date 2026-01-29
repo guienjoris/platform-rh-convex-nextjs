@@ -5,7 +5,7 @@ import { useMutation } from "convex/react";
 import { useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { ConvexError } from "convex/values";
-import { showToast } from "nextjs-toast-notify";
+import { addToast } from "@heroui/react";
 import { Input, Select } from "@/app/components/ui";
 
 export default function CreateUserPage() {
@@ -29,14 +29,7 @@ export default function CreateUserPage() {
         subject: identity?.subject ?? "",
       });
 
-      showToast.success("Compte crée avec succès", {
-        duration: 5000,
-        progress: true,
-        position: "top-center",
-        transition: "bounceIn",
-        icon: "",
-        sound: false,
-      });
+      addToast({ title: "Compte crée avec succès", color: "danger" });
 
       router.push("/");
     } catch (error) {
@@ -45,14 +38,7 @@ export default function CreateUserPage() {
           ? (error.data as { message: string }).message
           : "Unexpected error";
 
-      showToast.error(message, {
-        duration: 5000,
-        progress: true,
-        position: "top-center",
-        transition: "bounceIn",
-        icon: "",
-        sound: false,
-      });
+      addToast({ title: message, color: "danger" });
     }
   };
 

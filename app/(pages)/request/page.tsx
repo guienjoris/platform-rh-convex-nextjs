@@ -3,12 +3,18 @@ import { forbidden } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { Radio, Select } from "@/app/components/ui";
+import {
+  Radio,
+  RadioGroup,
+  Select,
+  SelectItem,
+  addToast,
+  DatePicker,
+} from "@heroui/react";
 import { useState, SetStateAction, Dispatch } from "react";
-import { DayPicker } from "react-day-picker";
-import "react-day-picker/style.css";
-import { showToast } from "nextjs-toast-notify";
 import Link from "next/link";
+import { parseAbsoluteToLocal } from "@internationalized/date";
+import { useDateFormatter } from "@react-aria/i18n";
 
 export default function RequestPage() {
   const identity = useQuery(api.users.getForCurrentUser);
@@ -36,15 +42,13 @@ export default function RequestPage() {
     assignedId: Id<"users">,
     setAssignedId: Dispatch<SetStateAction<Id<"users">>>,
   ] = useState(user._id);
-  const [startDate, setStartDate]: [
-    startDate: Date,
-    setStartDate: Dispatch<SetStateAction<Date>>,
-  ] = useState(new Date());
+  const [startDate, setStartDate] = useState(
+    parseAbsoluteToLocal("2025-04-07T18:45:22Z"),
+  );
 
-  const [endDate, setEndDate]: [
-    endDate: Date,
-    setEndDate: Dispatch<SetStateAction<Date>>,
-  ] = useState(new Date());
+  const [endDate, setEndDate] = useState(
+    parseAbsoluteToLocal("2025-04-07T18:45:22Z"),
+  );
 
   const [leaveType, setLeaveType]: [
     leaveType: Id<"leavetypes">,
@@ -55,11 +59,15 @@ export default function RequestPage() {
 
   const createLeave = useMutation(api.leave.saveLeave);
 
+  const formatter = useDateFormatter({
+    dateStyle: "full",
+  });
+
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
     if (leaveType === "" || !startDate || !endDate || !assignedId) {
-      showToast.error("Veuillez remplir tous les champs");
+      addToast({ title: "Veuillez remplir tous les champs", color: "danger" });
       return;
     }
 
@@ -72,7 +80,7 @@ export default function RequestPage() {
     };
 
     await createLeave(data);
-    showToast.success("Congé demandé avec succès");
+    addToast({ title: "Congé/RTT demandé avec succès", color: "success" });
     setSuccess(true);
   };
 
@@ -88,87 +96,94 @@ export default function RequestPage() {
             }}
           >
             <div className="flex flex-row items-center p-5">
-              <p className="font-bold">Pour qui ? : </p>
-              <Radio
-                name="forwho"
-                value="me"
-                label="Pour moi"
-                defaultChecked={forWho === "me"}
-                onChange={() => setForWho("me")}
-              />
-              <Radio
-                name="forwho"
-                value="other"
-                label="Pour quelqu'un d'autre"
-                defaultChecked={forWho === "other"}
-                onChange={() => setForWho("other")}
-              />
+              <RadioGroup label="Pour qui ? :">
+                <Radio
+                  name="forwho"
+                  value="me"
+                  defaultChecked={forWho === "me"}
+                  onChange={() => setForWho("me")}
+                >
+                  Pour moi
+                </Radio>
+                <Radio
+                  name="forwho"
+                  value="other"
+                  defaultChecked={forWho === "other"}
+                  onChange={() => setForWho("other")}
+                >
+                  Pour quelqu&apos;un d&apos;autre
+                </Radio>
+              </RadioGroup>
             </div>
             {forWho !== "me" && nMoins1 && nMoins1.length > 0 && (
               <div>
                 <Select
                   name="collaborator"
-                  label="Sélectionner un collaborateur"
-                  required={forWho === "other"}
-                  onChange={(value) => setAssignedId(value as Id<"users">)}
-                  options={nMoins1.map((user) => ({
-                    value: user._id,
-                    label: `${user.firstname}  ${user.lastname} (${user.email})}`,
-                  }))}
-                />
+                  label="Sélectionner un collaborateur: "
+                  onChange={(value) =>
+                    setAssignedId(value as unknown as Id<"users">)
+                  }
+                  labelPlacement="outside-left"
+                  placeholder="Veuillez sélectionner un collaborateur"
+                  isRequired
+                >
+                  {nMoins1
+                    .map((user) => ({
+                      key: user._id,
+                      label: `${user.firstname}  ${user.lastname} (${user.email})}`,
+                    }))
+                    .map((item) => (
+                      <SelectItem key={item.key}>{item.label}</SelectItem>
+                    ))}
+                </Select>
               </div>
             )}
             {leaveTypes && leaveTypes.length > 0 && (
-              <div>
+              <div className="mb-5">
                 <Select
-                  onChange={(value) => setLeaveType(value as Id<"leavetypes">)}
-                  required
                   name="leaveType"
-                  label="Sélectionner un type de congé"
-                  defaultValue=""
-                  options={[
-                    {
-                      label: "Veuillez sélectionner un type de congé",
-                      value: "",
-                    },
-                    ...leaveTypes.map((type) => ({
-                      value: type._id,
-                      label: type.label,
-                    })),
-                  ]}
-                />
+                  label="Sélectionner un type de congé: "
+                  onChange={(value) =>
+                    setLeaveType(value as unknown as Id<"leavetypes">)
+                  }
+                  labelPlacement="outside-left"
+                  placeholder="Veuillez sélectionner un type de congé"
+                  isRequired
+                >
+                  {...leaveTypes.map((item) => (
+                    <SelectItem key={item._id}>{item.label}</SelectItem>
+                  ))}
+                </Select>
               </div>
             )}
-            <div className="flex justify-between p-5 items-center">
-              <p className="font-bold mr-5">Date de début :</p>
-              <DayPicker
-                animate
-                mode="single"
-                selected={startDate}
-                onSelect={setStartDate}
-                required
-                footer={
-                  startDate
-                    ? `${startDate.toLocaleDateString()}`
-                    : "Sélectionner une date."
-                }
+            <div className="w-full flex flex-col gap-y-2">
+              <DatePicker
+                value={startDate}
+                onChange={setStartDate}
+                granularity="day"
+                showMonthAndYearPickers
+                label="Date de début"
+                variant="bordered"
               />
+              <p className="text-default-500 text-sm">
+                Date de début :{" "}
+                {startDate ? formatter.format(startDate.toDate()) : "--"}{" "}
+              </p>
             </div>
-            <div className="flex justify-between p-5 items-center">
-              <p className="font-bold mr-5">Date de fin :</p>
-              <DayPicker
-                animate
-                mode="single"
-                disabled={{ before: startDate }}
-                selected={endDate}
-                onSelect={setEndDate}
-                required
-                footer={
-                  endDate
-                    ? `${endDate.toLocaleDateString()}`
-                    : "Sélectionner une date."
-                }
+            <div className="w-full flex flex-col gap-y-2">
+              <DatePicker
+                value={endDate}
+                onChange={setEndDate}
+                granularity="day"
+                minValue={startDate}
+                showMonthAndYearPickers
+                label="Date de fin"
+                variant="bordered"
               />
+              <p className="text-default-500 text-sm">
+                Date de fin :{" "}
+                {endDate ? formatter.format(endDate.toDate()) : "--"}{" "}
+              </p>
             </div>
 
             <button

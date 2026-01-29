@@ -5,11 +5,12 @@ import { useMutation } from "convex/react";
 import { useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { ConvexError } from "convex/values";
-import { showToast } from "nextjs-toast-notify";
 import { forbidden } from "next/navigation";
 import { ROLES, rolesTypes } from "@/app/constants/roles";
 import { Id } from "@/convex/_generated/dataModel";
-import { Input, Select } from "@/app/components/ui";
+import { addToast } from "@heroui/react";
+
+import { Spinner, Select, Input, SelectItem } from "@heroui/react";
 
 export default function ModifyUserPage() {
   const modifyUser = useMutation(api.users.updateUser);
@@ -27,7 +28,13 @@ export default function ModifyUserPage() {
   const users = useQuery(api.users.get);
 
   if (!user) {
-    return <div>Loading ...</div>;
+    return (
+      <Spinner
+        classNames={{ label: "text-foreground mt-4" }}
+        label="gradient"
+        variant="gradient"
+      />
+    );
   }
 
   const isRHOrAdmin =
@@ -57,14 +64,7 @@ export default function ModifyUserPage() {
         },
       });
 
-      showToast.success("Compte modifié avec succès", {
-        duration: 5000,
-        progress: true,
-        position: "top-center",
-        transition: "bounceIn",
-        icon: "",
-        sound: false,
-      });
+      addToast({ title: "Compte modifié avec succès", color: "success" });
 
       router.push("/");
     } catch (error) {
@@ -73,32 +73,26 @@ export default function ModifyUserPage() {
           ? (error.data as { message: string }).message
           : "Unexpected error";
 
-      showToast.error(message, {
-        duration: 5000,
-        progress: true,
-        position: "top-center",
-        transition: "bounceIn",
-        icon: "",
-        sound: false,
-      });
+      addToast({ title: message, color: "danger" });
     }
   };
 
   return (
     <main className="flex h-screen items-center justify-center">
       <form
-        className="flex flex-col p-5 "
+        className="flex flex-col "
         onSubmit={async (event: React.SyntheticEvent) => {
           await handleSubmit(event);
         }}
       >
         <div className="p-2">
           <Input
-            type="text"
+            type="email"
             name="email"
             defaultValue={user.email}
             label="Email:"
-            required
+            labelPlacement="outside-left"
+            isRequired
           />
         </div>
         <div className="p-2">
@@ -107,7 +101,8 @@ export default function ModifyUserPage() {
             name="lastname"
             defaultValue={user.lastname}
             label="Nom de famille:"
-            required
+            labelPlacement="outside-left"
+            isRequired
           />
         </div>
         <div className="p-2">
@@ -116,21 +111,28 @@ export default function ModifyUserPage() {
             name="firstname"
             defaultValue={user.firstname}
             label="Prénom:"
-            required
+            labelPlacement="outside-left"
+            isRequired
           />
         </div>
         <div className="p-2">
           <Select
             name="gender"
             label="Genre:"
-            options={[
-              { value: "male", label: "Homme" },
-              { value: "female", label: "Femme" },
-              { value: "other", label: "Autre" },
-            ]}
             onChange={() => {}}
-            defaultValue={user.gender}
-          />
+            defaultSelectedKeys={user.gender}
+            labelPlacement="outside-left"
+            placeholder="Veuillez sélectionner un genre"
+            isRequired
+          >
+            {[
+              { key: "male", label: "Homme" },
+              { key: "female", label: "Femme" },
+              { key: "other", label: "Autre" },
+            ].map((item) => (
+              <SelectItem key={item.key}>{item.label}</SelectItem>
+            ))}
+          </Select>
         </div>
 
         {isRHOrAdmin && (
@@ -138,24 +140,35 @@ export default function ModifyUserPage() {
             <div className="p-2">
               <Select
                 name="role"
-                label="Rôle: "
-                options={ROLES.map((role) => ({ value: role, label: role }))}
+                label="Rôle:"
                 onChange={() => {}}
-                defaultValue={user?.role}
-              />
+                labelPlacement="outside-left"
+                placeholder="Veuillez sélectionner un rôle"
+                defaultSelectedKeys={user?.role}
+                isRequired
+              >
+                {ROLES.map((item) => (
+                  <SelectItem key={item}>{item}</SelectItem>
+                ))}
+              </Select>
             </div>
             {users && (
               <div className="p-2">
                 <Select
                   name="manager"
                   label="Responsable Hiérarchique:"
-                  options={users.map((user) => ({
-                    value: user._id,
-                    label: `${user.firstname}  ${user.lastname} (${user.email})}`,
-                  }))}
                   onChange={() => {}}
-                  defaultValue={user?.manager}
-                />
+                  labelPlacement="outside-left"
+                  placeholder="Veuillez sélectionner un supérieur hiérarchique"
+                  defaultSelectedKeys={user?.role}
+                  isRequired
+                >
+                  {users.map((user) => (
+                    <SelectItem
+                      key={user._id}
+                    >{`${user.firstname}  ${user.lastname} (${user.email})}`}</SelectItem>
+                  ))}
+                </Select>
               </div>
             )}
           </div>
