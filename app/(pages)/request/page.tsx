@@ -42,12 +42,17 @@ export default function RequestPage() {
     assignedId: Id<"users">,
     setAssignedId: Dispatch<SetStateAction<Id<"users">>>,
   ] = useState(user._id);
+
+  const formatter = useDateFormatter({
+    dateStyle: "short",
+  });
+
   const [startDate, setStartDate] = useState(
-    parseAbsoluteToLocal("2025-04-07T18:45:22Z"),
+    parseAbsoluteToLocal(new Date().toISOString()),
   );
 
   const [endDate, setEndDate] = useState(
-    parseAbsoluteToLocal("2025-04-07T18:45:22Z"),
+    parseAbsoluteToLocal(new Date().toISOString()),
   );
 
   const [leaveType, setLeaveType]: [
@@ -59,10 +64,6 @@ export default function RequestPage() {
 
   const createLeave = useMutation(api.leave.saveLeave);
 
-  const formatter = useDateFormatter({
-    dateStyle: "full",
-  });
-
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
@@ -72,8 +73,8 @@ export default function RequestPage() {
     }
 
     const data = {
-      startDate: startDate.toString(),
-      endDate: endDate.toString(),
+      startDate: formatter.format(startDate.toDate()),
+      endDate: formatter.format(endDate.toDate()),
       leaveType,
       assignedId,
       assignerId: user._id,
@@ -85,12 +86,12 @@ export default function RequestPage() {
   };
 
   return (
-    <main className="flex min-h-auto flex-col items-center justify-between p-2 ">
+    <main className="flex min-h-auto flex-col items-center justify-between p-2 w-full ">
       {!success ? (
         <>
           <h2>Demander un congé/RTT</h2>
           <form
-            className="flex flex-col p-5"
+            className="flex flex-col p-5 w-[30%]"
             onSubmit={async (event: React.SyntheticEvent) => {
               await handleSubmit(event);
             }}
@@ -116,14 +117,14 @@ export default function RequestPage() {
               </RadioGroup>
             </div>
             {forWho !== "me" && nMoins1 && nMoins1.length > 0 && (
-              <div>
+              <div className="mb-2">
                 <Select
                   name="collaborator"
                   label="Sélectionner un collaborateur: "
                   onChange={(value) =>
                     setAssignedId(value as unknown as Id<"users">)
                   }
-                  labelPlacement="outside-left"
+                  labelPlacement="inside"
                   placeholder="Veuillez sélectionner un collaborateur"
                   isRequired
                 >
@@ -146,7 +147,7 @@ export default function RequestPage() {
                   onChange={(value) =>
                     setLeaveType(value as unknown as Id<"leavetypes">)
                   }
-                  labelPlacement="outside-left"
+                  labelPlacement="inside"
                   placeholder="Veuillez sélectionner un type de congé"
                   isRequired
                 >
@@ -159,7 +160,7 @@ export default function RequestPage() {
             <div className="w-full flex flex-col gap-y-2">
               <DatePicker
                 value={startDate}
-                onChange={setStartDate}
+                onChange={(value) => value && setStartDate(value)}
                 granularity="day"
                 showMonthAndYearPickers
                 label="Date de début"
@@ -173,7 +174,7 @@ export default function RequestPage() {
             <div className="w-full flex flex-col gap-y-2">
               <DatePicker
                 value={endDate}
-                onChange={setEndDate}
+                onChange={(value) => value && setEndDate(value)}
                 granularity="day"
                 minValue={startDate}
                 showMonthAndYearPickers
