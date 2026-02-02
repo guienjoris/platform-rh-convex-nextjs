@@ -78,13 +78,14 @@ export default function ModifyUserPage() {
   };
 
   return (
-    <main className="flex h-screen items-center justify-center">
+    <main className="flex h-auto justify-center">
       <form
-        className="flex flex-col "
+        className="flex flex-col border-gray-300 border rounded-2xl p-2 shadow-xl"
         onSubmit={async (event: React.SyntheticEvent) => {
           await handleSubmit(event);
         }}
       >
+        <h2 className="font-bold text-center p-2 mb-5">Modifier mon compte</h2>
         <div className="p-2">
           <Input
             type="email"

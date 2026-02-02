@@ -55,10 +55,7 @@ export default function RequestPage() {
     parseAbsoluteToLocal(new Date().toISOString()),
   );
 
-  const [leaveType, setLeaveType]: [
-    leaveType: Id<"leavetypes">,
-    setLeaveType: Dispatch<SetStateAction<Id<"leavetypes">>>,
-  ] = useState("" as Id<"leavetypes">);
+  const [leaveType, setLeaveType] = useState("" as Id<"leavetypes">);
 
   const [success, setSuccess] = useState(false);
 
@@ -86,17 +83,19 @@ export default function RequestPage() {
   };
 
   return (
-    <main className="flex min-h-auto flex-col items-center justify-between p-2 w-full ">
+    <main className="flex h-auto justify-center  ">
       {!success ? (
         <>
-          <h2>Demander un congé/RTT</h2>
           <form
-            className="flex flex-col p-5 w-[30%]"
+            className="flex flex-col border-gray-300 border rounded-2xl p-2 shadow-xl w-[40%]"
             onSubmit={async (event: React.SyntheticEvent) => {
               await handleSubmit(event);
             }}
           >
-            <div className="flex flex-row items-center p-5">
+            <h2 className="font-bold text-center p-2 mb-5">
+              Demander un congé/RTT
+            </h2>
+            <div className="p-5">
               <RadioGroup label="Pour qui ? :">
                 <Radio
                   name="forwho"
@@ -122,7 +121,7 @@ export default function RequestPage() {
                   name="collaborator"
                   label="Sélectionner un collaborateur: "
                   onChange={(value) =>
-                    setAssignedId(value as unknown as Id<"users">)
+                    setAssignedId(value.target.value as Id<"users">)
                   }
                   labelPlacement="inside"
                   placeholder="Veuillez sélectionner un collaborateur"
@@ -145,8 +144,9 @@ export default function RequestPage() {
                   name="leaveType"
                   label="Sélectionner un type de congé: "
                   onChange={(value) =>
-                    setLeaveType(value as unknown as Id<"leavetypes">)
+                    setLeaveType(value.target.value as Id<"leavetypes">)
                   }
+                  selectedKeys={[leaveType]}
                   labelPlacement="inside"
                   placeholder="Veuillez sélectionner un type de congé"
                   isRequired

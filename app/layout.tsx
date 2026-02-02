@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ConvexClientProvider } from "./providers/convex-client-provider";
 import { ClerkProvider } from "@clerk/nextjs";
-import { Navbar } from "./components/navbar/navbar";
+import { NavbarComponent } from "./components/navbar/navbar";
 import { Sidebar } from "./components/sidebar/sidebar";
 
 const geistSans = Geist({
@@ -33,7 +33,7 @@ export default async function RootLayout({
       >
         <ClerkProvider>
           <ConvexClientProvider>
-            <Navbar />
+            <NavbarComponent />
             <Sidebar />
             {children}
           </ConvexClientProvider>
