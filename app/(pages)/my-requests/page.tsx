@@ -9,13 +9,10 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  User,
   Chip,
-  Tooltip,
   ChipProps,
 } from "@heroui/react";
-import { Key, useCallback } from "react";
-import { Doc } from "../../../convex/_generated/dataModel";
+import { useCallback } from "react";
 
 export default function MyRequestsPage() {
   const identity = useQuery(api.users.getForCurrentUser);
