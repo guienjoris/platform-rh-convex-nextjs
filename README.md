@@ -1,34 +1,20 @@
 List of tasks to complete:
 
-## USER MANAGEMENT
-
+- [x] Add lib UI
 - [x] Add create account/users
 - [x] Add authentication to the app
+- [x] Add request leave form
+- [x] Add modif user form 
+- [ ] Add time in leave date
+- [ ] Add request leaves by date for user and for manager ( team view )
+- [ ] Add Calendar component 
+  - [ ] Monthly
+    - [ ] Display days in grid for each month 
+    - [ ] Display leaves 
+    - [ ] Navigation
+  - [ ] Annually
+    - [ ] Display months in grid for each year 
+    - [ ] Display leaves 
+    - [ ] Navigation
 - [ ] Add user roles and permissions
 - [ ] Implement user profile management
-
-User Types:
-- [ ] Collaborators
-- [ ] Manager
-- [ ] Admin
-
-User Object:
-- [ ] User ID
-- [ ] Email
-- [ ] Password
-- [ ] Name
-- [ ] Phone Number
-- [ ] Address
-- [ ] Role (admin/collaborator/manager)
-- [ ] Status (active/inactive)
-
-## ADMIN MANAGEMENT
-
-- [ ] Add admin management functionality
- - Gestion of Managers and relations with Collaborators
-
-## ADD LEAVE/RTT MANAGEMENT
-
-- [ ] Add leave/rtt request functionality
-- [ ] Implement leave/rtt approval process
-- [ ] Add leave/rtt planning
