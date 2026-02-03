@@ -5,8 +5,17 @@ import { SignInButton, UserButton } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Link from "next/link";
-import { Suspense } from "react";
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@heroui/react";
+import { Suspense, useState } from "react";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
+} from "@heroui/react";
+import { menuItem } from "./menu";
 
 export const AcmeLogo = () => {
   return (
@@ -22,14 +31,26 @@ export const AcmeLogo = () => {
 };
 
 export function NavbarComponent() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
-    <Navbar shouldHideOnScroll>
-      <NavbarBrand>
-        <Link className="font-bold text-inherit flex items-center" href="/">
-          <AcmeLogo />
-          Platform
-        </Link>
-      </NavbarBrand>
+    <Navbar
+      shouldHideOnScroll
+      onMenuOpenChange={setIsMenuOpen}
+      isMenuOpen={isMenuOpen}
+      className="mb-5"
+    >
+      <NavbarContent>
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+        />
+        <NavbarBrand>
+          <Link className="font-bold text-inherit flex items-center" href="/">
+            <AcmeLogo />
+            Platform
+          </Link>
+        </NavbarBrand>
+      </NavbarContent>
 
       <NavbarContent justify="end">
         <Authenticated>
@@ -50,27 +71,26 @@ export function NavbarComponent() {
           </NavbarItem>
         </Unauthenticated>
       </NavbarContent>
+      <NavbarMenu>
+        {menuItem.map((item, index) => {
+          return (
+            <NavbarMenuItem
+              key={`${item}-${index}`}
+              className="flex text-center "
+            >
+              <Link
+                color={"primary"}
+                href={item.url}
+                className="w-full items-center text-4xl hover:text-blue-500 hover:scale-110 duration-200"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            </NavbarMenuItem>
+          );
+        })}
+      </NavbarMenu>
     </Navbar>
-  );
-  return (
-    <div className="w-screen border-b-2 mb-2">
-      <div className="flex justify-between items-center p-4">
-        <div className="text-xl font-bold">
-          <Link href="/">Platform</Link>
-        </div>
-        <div className="flex space-x-4">
-          <Authenticated>
-            <UserButton userProfileMode="modal" />
-            <Suspense fallback={<div>Loading...</div>}>
-              <ConnectedUser />
-            </Suspense>
-          </Authenticated>
-          <Unauthenticated>
-            <SignInButton />
-          </Unauthenticated>
-        </div>
-      </div>
-    </div>
   );
 }
 

@@ -12,8 +12,10 @@ import {
   User,
   Chip,
   Tooltip,
+  ChipProps,
 } from "@heroui/react";
-import { useCallback } from "react";
+import { Key, useCallback } from "react";
+import { Doc } from "../../../convex/_generated/dataModel";
 
 export default function MyRequestsPage() {
   const identity = useQuery(api.users.getForCurrentUser);
@@ -39,25 +41,42 @@ export default function MyRequestsPage() {
     { name: "Statut", uid: "status" },
   ];
 
+  const statusColorMap: Record<string, ChipProps["color"]> = {
+    active: "success",
+    paused: "danger",
+    vacation: "warning",
+  };
+
   const filteredLeaves =
     leaves?.leaves && leaves.leaves.filter((leave) => leave !== null);
 
-  const renderCell = useCallback((leave, columnKey) => {
-    const cellValue = leave[columnKey];
+  const renderCell = useCallback(
+    (leave, columnKey) => {
+      const cellValue = leave[columnKey];
 
-    switch (columnKey) {
-      case "startDate":
-        return <p>{leave.startDate}</p>;
-      case "endDate":
-        return <p>{leave.endDate}</p>;
-      case "leaveType":
-        return <p>{leave.leaveType?.label}</p>;
-      case "status":
-        return <p>{leave.validatedBy ? "Validé" : "En attente"}</p>;
-      default:
-        return cellValue;
-    }
-  }, []);
+      const statusColor = leave.validatedBy
+        ? statusColorMap.active
+        : statusColorMap.vacation;
+
+      switch (columnKey) {
+        case "startDate":
+          return <p>{leave.startDate}</p>;
+        case "endDate":
+          return <p>{leave.endDate}</p>;
+        case "leaveType":
+          return <p>{leave.leaveType?.label}</p>;
+        case "status":
+          return (
+            <Chip className="capitalize" color={statusColor} size="sm">
+              {leave.validatedBy ? "Validé" : "En attente"}
+            </Chip>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [statusColorMap.active, statusColorMap.vacation],
+  );
 
   return (
     <div className="flex items-center justify-center w-full">

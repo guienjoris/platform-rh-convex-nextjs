@@ -83,18 +83,18 @@ export default function RequestPage() {
   };
 
   return (
-    <main className="flex h-auto justify-center  ">
+    <main className="flex flex-col items-center h-auto justify-center  ">
       {!success ? (
         <>
+          <h2 className="font-bold text-center p-2 mb-5">
+            Demander un congé/RTT
+          </h2>
           <form
             className="flex flex-col border-gray-300 border rounded-2xl p-2 shadow-xl w-[40%]"
             onSubmit={async (event: React.SyntheticEvent) => {
               await handleSubmit(event);
             }}
           >
-            <h2 className="font-bold text-center p-2 mb-5">
-              Demander un congé/RTT
-            </h2>
             <div className="p-5">
               <RadioGroup label="Pour qui ? :">
                 <Radio
