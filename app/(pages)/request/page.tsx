@@ -44,7 +44,8 @@ export default function RequestPage() {
   ] = useState(user._id);
 
   const formatter = useDateFormatter({
-    dateStyle: "short",
+    dateStyle: "medium",
+    timeStyle: "short",
   });
 
   const [startDate, setStartDate] = useState(
@@ -161,7 +162,8 @@ export default function RequestPage() {
               <DatePicker
                 value={startDate}
                 onChange={(value) => value && setStartDate(value)}
-                granularity="day"
+                granularity="minute"
+                hideTimeZone
                 showMonthAndYearPickers
                 label="Date de début"
                 variant="bordered"
@@ -175,7 +177,8 @@ export default function RequestPage() {
               <DatePicker
                 value={endDate}
                 onChange={(value) => value && setEndDate(value)}
-                granularity="day"
+                granularity="minute"
+                hideTimeZone
                 minValue={startDate}
                 showMonthAndYearPickers
                 label="Date de fin"
