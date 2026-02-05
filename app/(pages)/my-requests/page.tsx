@@ -57,9 +57,9 @@ export default function MyRequestsPage() {
 
       switch (columnKey) {
         case "startDate":
-          return <p>{leave.startDate}</p>;
+          return <p>{new Date(leave.startDate).toLocaleString()}</p>;
         case "endDate":
-          return <p>{leave.endDate}</p>;
+          return <p>{new Date(leave.endDate).toLocaleString()}</p>;
         case "leaveType":
           return <p>{leave.leaveType?.label}</p>;
         case "status":

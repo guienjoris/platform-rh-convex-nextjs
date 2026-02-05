@@ -30,6 +30,50 @@ export const saveLeave = mutation({
   },
 });
 
+export const getLeavesByDateForMe = query({
+  args: {
+    assignedId: v.id("users"),
+    startDate: v.string(),
+    endDate: v.string(),
+  },
+  handler: async (ctx, { assignedId, startDate, endDate }) => {
+    const leaves = await ctx.db
+      .query("leaves")
+      .withIndex("by_assigned_id", (leave) =>
+        leave.eq("assignedId", assignedId),
+      )
+      .filter((leave) =>
+        leave.and(
+          leave.gte(leave.field("startDate"), startDate),
+          leave.lte(leave.field("endDate"), endDate),
+        ),
+      )
+      .collect();
+
+    if (!leaves) {
+      return null;
+    }
+
+    return {
+      leaves: await Promise.all(
+        leaves.map(async (leave) => ({
+          ...leave,
+          assigned: await getUserByIdFunction(ctx, { id: leave.assignedId }),
+          assigner: await getUserByIdFunction(ctx, { id: leave.assignerId }),
+          leaveType: await getLeaveTypeByIdFunction(ctx, {
+            id: leave.leaveType,
+          }),
+          ...(leave.validatedBy && {
+            validator: await getUserByIdFunction(ctx, {
+              id: leave.validatedBy,
+            }),
+          }),
+        })),
+      ),
+    };
+  },
+});
+
 export const getLeavesForMe = query({
   args: {
     assignedId: v.id("users"),

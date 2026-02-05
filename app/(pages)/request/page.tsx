@@ -71,8 +71,8 @@ export default function RequestPage() {
     }
 
     const data = {
-      startDate: formatter.format(startDate.toDate()),
-      endDate: formatter.format(endDate.toDate()),
+      startDate: startDate.toDate().toISOString(),
+      endDate: endDate.toDate().toISOString(),
       leaveType,
       assignedId,
       assignerId: user._id,

@@ -38,6 +38,8 @@ export default defineSchema(
       validatedBy: v.optional(v.id("users")),
       validatedAt: v.optional(v.string()),
     })
+      .index("by_start_date", ["startDate"])
+      .index("by_end_date", ["endDate"])
       .index("by_assigner_id", ["assignerId"])
       .index("by_assigned_id", ["assignedId"])
       .index("by_validate_by", ["validatedBy"]),

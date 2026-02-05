@@ -6,7 +6,8 @@ List of tasks to complete:
 - [x] Add request leave form
 - [x] Add modif user form 
 - [x] Add time in leave date
-- [ ] Add request leaves by date for user and for manager ( team view )
+- [x] Add request leaves by date for user 
+- [ ] Add request leaves by date for manager ( team view )
 - [ ] Add Calendar component 
   - [ ] Monthly
     - [ ] Display days in grid for each month 
