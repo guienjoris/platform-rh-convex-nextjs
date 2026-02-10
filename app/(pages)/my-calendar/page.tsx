@@ -2,7 +2,7 @@
 import { forbidden } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useState } from "react";
+import { useEffect, useState, SetStateAction, Dispatch } from "react";
 import {
   CalendarDate,
   startOfMonth,
@@ -28,7 +28,10 @@ export default function MyCalendar() {
 
   const currentDate = new Date();
 
-  const [calendarDate, setCalendarDate] = useState(
+  const [calendarDate, setCalendarDate]: [
+    CalendarDate,
+    Dispatch<SetStateAction<CalendarDate>>,
+  ] = useState(
     new CalendarDate(
       currentDate.getFullYear(),
       currentDate.getMonth() + 1,
@@ -43,6 +46,15 @@ export default function MyCalendar() {
     endOfMonth(calendarDate).toDate(getLocalTimeZone()).toISOString(),
   );
 
+  useEffect(() => {
+    setStartDate(
+      startOfMonth(calendarDate).toDate(getLocalTimeZone()).toISOString(),
+    );
+    setEndDate(
+      endOfMonth(calendarDate).toDate(getLocalTimeZone()).toISOString(),
+    );
+  }, [calendarDate]);
+
   const leaves = useQuery(api.leave.getLeavesByDateForMe, {
     assignedId: user._id,
     startDate,
@@ -51,7 +63,11 @@ export default function MyCalendar() {
 
   return (
     <div>
-      <Planning calendarDate={calendarDate} leaves={leaves} />
+      <Planning
+        calendarDate={calendarDate}
+        leaves={leaves}
+        setCalendarDate={setCalendarDate}
+      />
     </div>
   );
 }
